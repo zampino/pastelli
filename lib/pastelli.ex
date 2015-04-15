@@ -1,2 +1,72 @@
 defmodule Pastelli do
+
+  @moduledoc """
+  Adapter interface to the Elli webserver.
+
+  ## Options
+
+  * `:ip` - the ip to bind the server to.
+    Must be a tuple in the format `{x, y, z, w}`.
+
+  * `:port` - the port to run the server.
+    Defaults to 4000 (http)
+
+  * `:acceptors` - the number of acceptors for the listener.
+    Defaults to 20.
+
+  * `:max_connections` - max number of connections supported.
+    Defaults to `:infinity`.
+
+  * `:ref` - the reference name to be used.
+    Defaults to `plug.HTTP` (http) and `plug.HTTPS` (https).
+    This is the value that needs to be given on shutdown.
+
+  """
+
+  @doc """
+  Run elli under http.
+
+  ## Example
+
+      # Starts a new interface
+      Plug.Adapters.Elli.http MyPlug, [], port: 80
+
+      # TODO: The interface above can be shutdown with
+      Plug.Adapters.Elli.shutdown MyPlug.HTTP
+
+  """
+  @spec http(module(), Keyword.t, Keyword.t) ::
+      {:ok, pid} | {:error, :eaddrinuse} | {:error, term}
+  def http(plug, options, elli_options) do
+    run(:http, plug, options, elli_options)
+  end
+
+  def shutdown(ref) do
+    Pastelli.Supervisor.shutdown(ref)
+  end
+
+  defp run(scheme, plug, options, elli_options) do
+    Pastelli.Supervisor.start_link(
+      ref_for(plug),
+      build_elli_args(scheme, plug, options, elli_options)
+    )
+  end
+
+  defp build_elli_args(scheme, plug, options, elli_options) do
+    default_elli_options
+    |> Keyword.put(:callback_args, {plug, options})
+    |> Keyword.merge(elli_options)
+  end
+
+  defp default_elli_options do
+    [
+      port: 4000,
+      callback: Pastelli.Handler
+    ]
+  end
+
+  defp ref_for(plug) do
+    Module.concat plug, "HTTP"
+  end
+
 end
