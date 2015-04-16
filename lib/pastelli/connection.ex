@@ -51,7 +51,8 @@ defmodule Pastelli.Connection do
     end
   end
 
-  # adapter extensions # needs a mix-in inside router
+  # adapter extensions
+  # needs a mix-in inside router
 
   def close_chunk(req) do
     Request.chunk_ref(req)

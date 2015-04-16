@@ -25,16 +25,57 @@ you'll type:
 Pastelli.http MyPlug, [], [port: 4001]
 ```
 
+Now setup your router (or plug) as usual
+```elixir
+defmodule MyPlug.Router do
+  use Plug.Router
+  plug :match
+  plug :dispatch
+
+  def init(_options), do: []
+
+  get "/connections/:id" do
+    put_resp_content_type(conn, "text/event-stream")
+    |> assign(:init_chunk,
+      "retry: 6000\nid: #{id}\nevent: handshake\ndata: connected #{id}\n\n")
+    # you can setup an initial chunk to be sent with the first connection 
+    |> send_chunked(200)
+    |> register_stream(id)
+    # with pastelli this dispatch won't block execution
+    # but rather enter a receive loop just afterwards,
+    # waiting for chunks
+  end
+
+  defp register_stream(conn, id) do
+    {:ok, pid} = MyPlug.Connections.register id, conn
+    # usually a :simple_one_for_one supervised
+    # event manager registered into a hashdict of processes
+
+    Process.link pid
+    # we link the process to the streaming manager!
+    # once the chunk is complete (client closes socket or crashes)
+    # it is your responsability to monitor the event manager and
+    # do the necessary cleanup.
+    conn
+  end
+
+```
+
+
 ## `Plug.Conn` API covered by pastelli
 - read_req_body
 - chunk
 - send_chunked
 - send_resp
 
+## `Plug.Conn` api extensions
+- initial chunk
+- close chunk
+
 ## Roadmap
 
 - [x] run http
 - [ ] run https
-- [ ] shutdown reference
+- [x] shutdown reference
 - [ ] docs
 - [ ] hex package
