@@ -1,4 +1,5 @@
-# Pastelli
+# Pastelli ![travis](https://travis-ci.org/zampino/pastelli.svg)
+
 ![alt](logo.png)
 
 Pastelli is a colorful Plug adapter for [Elli](//github.com/knutin/elli)
@@ -38,7 +39,7 @@ defmodule MyPlug.Router do
     put_resp_content_type(conn, "text/event-stream")
     |> assign(:init_chunk,
       "retry: 6000\nid: #{id}\nevent: handshake\ndata: connected #{id}\n\n")
-    # you can setup an initial chunk to be sent with the first connection 
+    # you can setup an initial chunk to be sent with the first connection
     |> send_chunked(200)
     |> register_stream(id)
     # with pastelli this dispatch won't block execution
