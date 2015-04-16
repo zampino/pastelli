@@ -1,5 +1,5 @@
 defmodule Pastelli do
-
+  require Logger
   @moduledoc """
   Adapter interface to the Elli webserver.
 
@@ -41,6 +41,10 @@ defmodule Pastelli do
     run(:http, plug, options, elli_options)
   end
 
+  def https(plug, options, elli_options) do
+    raise ArgumentError, message: "NotImplemented"
+  end
+
   def shutdown(ref) do
     Pastelli.Supervisor.shutdown(ref)
   end
@@ -48,11 +52,11 @@ defmodule Pastelli do
   defp run(scheme, plug, options, elli_options) do
     Pastelli.Supervisor.start_link(
       ref_for(plug),
-      build_elli_args(scheme, plug, options, elli_options)
+      build_elli_options(scheme, plug, options, elli_options)
     )
   end
 
-  defp build_elli_args(scheme, plug, options, elli_options) do
+  def build_elli_options(scheme, plug, options, elli_options) do
     default_elli_options
     |> Keyword.put(:callback_args, {plug, options})
     |> Keyword.merge(elli_options)

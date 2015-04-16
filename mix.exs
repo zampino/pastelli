@@ -26,6 +26,7 @@ defmodule Pastelli.Mixfile do
   defp deps do
     [
       {:plug, "~> 0.12.0"},
+      {:elli, github: "knutin/elli"},
       {:hackney, "~> 0.13", only: :test}
     ]
   end
