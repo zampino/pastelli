@@ -55,8 +55,9 @@ defmodule MyPlug.Router do
     Process.link pid
     # we link the process to the streaming manager!
     # once the chunk is complete (client closes socket or crashes)
+    # pastelli handler will send a shutdown exit to the connection process
     # it is your responsability to monitor the event manager and
-    # do the necessary cleanup.
+    # do the necessary cleanup
     conn
   end
 
