@@ -7,8 +7,9 @@ defmodule Pastelli.Connection do
     host_port = Enum.find_value headers, fn({name, value})->
       (name == "Host") && value
     end
-    [host, port] = String.split(host_port, ":")
-
+    [host | and_port] = String.split(host_port, ":")
+    port = List.first and_port
+    
     req_headers = downcase_keys(headers)
     |> ensure_origin(host_port)
 
