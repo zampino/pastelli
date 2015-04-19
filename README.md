@@ -14,9 +14,7 @@ it implements just a subset (see below) of the `Plug.Conn` api.
 The current built-in Plug cowboy adapter does not notify the
 connection owner process of the EventSource client
 closing the socket (or just crashing).
-Pastelli tries to address this issue.
-
-More details in [this](https://github.com/elixir-lang/issues/xxx) issue.
+More precisely, Pastelli tries to address this [issue](https://github.com/elixir-lang/issues/228).
 
 ## Usage
 As you would do with your beloved `Plug.Adapters.Cowboy`,
