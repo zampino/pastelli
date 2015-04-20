@@ -9,13 +9,6 @@ connections (read `EventSource`).
 For the moment,
 it implements just a subset (see below) of the `Plug.Conn` api.
 
-> why?
-
-The current built-in Plug cowboy adapter does not notify the
-connection owner process of the EventSource client
-closing the socket (or just crashing).
-More precisely, Pastelli tries to address this [issue](https://github.com/elixir-lang/issues/228).
-
 ## Usage
 As you would do with your beloved `Plug.Adapters.Cowboy`,
 you'll type:
@@ -61,6 +54,15 @@ defmodule MyPlug.Router do
 
 ```
 
+## Examples
+For a working example, have a look [here](https://github.com/zampino/plug_rc).
+
+## Pastelli tries to help!
+
+The current built-in Plug cowboy adapter does not notify the
+connection owner process of the EventSource client
+closing the socket (or just crashing).
+More precisely, Pastelli tries to address this [issue](https://github.com/elixir-lang/plug/issues/228).
 
 ## `Plug.Conn` API covered by pastelli
 - read_req_body
