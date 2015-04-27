@@ -14,7 +14,7 @@ As you would do with your beloved `Plug.Adapters.Cowboy`,
 you'll type:
 
 ```elixir
-Pastelli.http MyPlug, [], [port: 4001]
+Pastelli.http MyPlug.Router, [], [port: 4001]
 ```
 
 Now setup your router (or plug) as usual
@@ -78,6 +78,7 @@ More precisely, Pastelli tries to address this [issue](https://github.com/elixir
 
 - [x] run http
 - [ ] run https
-- [x] shutdown reference
+- [ ] websocket upgrade via mmzeeman/elli_websocket
 - [ ] docs
 - [ ] hex package
+- [ ] shutdown reference
