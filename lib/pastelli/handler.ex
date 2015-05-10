@@ -3,9 +3,13 @@ defmodule Pastelli.Handler do
 
   alias :elli_request, as: Request
 
-  def init(_req, {_plug, _opts}) do
-    :ignore
+  def init(req, {_plug, _opts}) do
+    Request.get_header("Upgrade", req) |> maybe_upgrade
   end
+
+  defp maybe_upgrade("websocket"), do: {:ok, :handover}
+
+  defp maybe_upgrade(_), do: {:ok, :standard}
 
   def handle(req, {plug, opts}) do
     Pastelli.Connection.build_from(req)
@@ -16,6 +20,13 @@ defmodule Pastelli.Handler do
   defp log(what, header\\"") do
     Logger.debug "#{header}\n#{inspect(what)}\n"
     what
+  end
+
+  defp process_connection(%Plug.Conn{private: %{upgrade: {:websocket, ws_handler}}}=conn, _plug) do
+    {_, req} = conn.adapter
+    log "\nUUUU about to upgrade UUUUUUUU\n with handler #{inspect(ws_handler)}\n"
+    :elli_websocket.upgrade req, handler: ws_handler, handler_opts: [conn: conn]
+    {:close, ''}
   end
 
   defp process_connection(%Plug.Conn{state: :sent}=conn, _plug) do

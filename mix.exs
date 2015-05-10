@@ -27,6 +27,7 @@ defmodule Pastelli.Mixfile do
     [
       {:plug, github: "elixir-lang/plug"},
       {:elli, github: "knutin/elli"},
+      {:elli_websocket, github: "mmzeeman/elli_websocket", compile: "make test compile"},
       {:hackney, "~> 0.13", only: :test}
     ]
   end
