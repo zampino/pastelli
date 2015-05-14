@@ -1,4 +1,4 @@
 %{"elli": {:git, "git://github.com/knutin/elli.git", "46135bf5c0096e1419c799535f798d14b2bd6f44", []},
   "hackney": {:hex, :hackney, "0.15.2"},
   "idna": {:hex, :idna, "1.0.1"},
-  "plug": {:hex, :plug, "0.12.0"}}
+  "plug": {:git, "git://github.com/elixir-lang/plug.git", "d91e0e977a3cbf29a08aceca5f76393a103f6c5e", []}}

@@ -28,12 +28,9 @@ defmodule Pastelli.ConnectionTest do
   setup_all do
     {:ok, pid} = Pastelli.http __MODULE__, [], port: 8001
     Process.unlink pid
-
     on_exit fn ->
-      Logger.debug "boot: #{inspect(Supervisor.which_children(pid))}"
       :ok = Pastelli.shutdown __MODULE__.HTTP
     end
-
     :ok
   end
 
@@ -77,13 +74,13 @@ defmodule Pastelli.ConnectionTest do
   def send_chunked(conn) do
     conn = send_chunked(conn, 200)
     assert conn.state == :chunked
-    conn = assign(conn, :init_chunk, "HANDSHAKE\n")
+    conn = assign(conn, :init_chunk, "data: HANDSHAKE\n\n")
 
     spawn_link fn()->
-      :timer.sleep 400
-      {:ok, conn} = chunk(conn, "HELLO\n")
+      :timer.sleep 200
+      {:ok, conn} = chunk(conn, "data: HELLO\n\n")
       :timer.sleep 100
-      {:ok, conn} = chunk(conn, "WORLD\n")
+      {:ok, conn} = chunk(conn, "data: WORLD\n\n")
       {handler, req} = conn.adapter
       handler.close_chunk(req)
     end
@@ -91,12 +88,65 @@ defmodule Pastelli.ConnectionTest do
     conn
   end
 
-  test "sends initial chunk, then 2 deferred chunks and closes the connection" do
+  test "I can send an initial chunk, then 2 deferred chunks and then I can close
+        the connection" do
     {:ok, status, headers, client} =
       :hackney.request(:get, "http://127.0.0.1:8001/send_chunked", [], "", [])
-    :timer.sleep 2000
+    :timer.sleep 400
     {:ok, body} = :hackney.body(client)
-    Logger.debug "test body: #{inspect(body)}"
-    assert body == "HANDSHAKE\nHELLO\nWORLD\n"
+    assert body == "data: HANDSHAKE\n\ndata: HELLO\n\ndata: WORLD\n\n"
+  end
+
+
+  defmodule SideEffect do
+    use GenServer
+
+    def start_link(test_pid) do
+      GenServer.start_link __MODULE__,
+        %{test_pid: test_pid},
+        name: __MODULE__
+    end
+
+    def register(conn) do
+      GenServer.call __MODULE__, {:register, conn}
+    end
+
+    def handle_call {:register, conn}, _from, state do
+      pid = spawn fn ->
+        :timer.sleep 200
+        {:ok, _conn} = Plug.Conn.chunk(conn, "data: please don't cl\n\n")
+        :timer.sleep :infinity
+      end
+      Process.monitor pid
+      {:reply, pid, Map.put(state, :linked_pid, pid)}
+    end
+
+    def handle_info {:DOWN, _ref, :process, pid, :shutdown}, state do
+      match_pid = state.linked_pid
+      ^match_pid = pid
+      send state.test_pid, :conn_process_was_shut_down
+      {:noreply, state}
+    end
+  end
+
+  def send_chunky(conn) do
+    conn = send_chunked(conn, 200) |> assign(:init_chunk, "data: HANDSHAKE\n\n")
+    SideEffect.register(conn) |> Process.link()
+    conn
+  end
+
+  test "I can send chunks, but client closes the connection,
+        my connection pid gets killed!" do
+    {:ok, _pid} = SideEffect.start_link(self)
+    spawn_link fn()->
+      {:ok, _status, _headers, client} =
+        :hackney.request(:get, "http://127.0.0.1:8001/send_chunky", [], "", [])
+      :timer.sleep 300
+      assert {:ok, "data: HANDSHAKE\n\n"} == :hackney.stream_body(client)
+      assert {:ok, "data: please don't cl\n\n"} == :hackney.stream_body(client)
+      :timer.sleep 200
+      :hackney.close(client)
+    end
+    assert_receive(:conn_process_was_shut_down, 800)
   end
 end

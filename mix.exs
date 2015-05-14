@@ -25,7 +25,7 @@ defmodule Pastelli.Mixfile do
   # Type `mix help deps` for more examples and options
   defp deps do
     [
-      {:plug, "~> 0.12.0"},
+      {:plug, github: "elixir-lang/plug"},
       {:elli, github: "knutin/elli"},
       {:hackney, "~> 0.13", only: :test}
     ]

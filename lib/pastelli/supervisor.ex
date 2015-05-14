@@ -14,7 +14,6 @@ defmodule Pastelli.Supervisor do
   end
 
   def shutdown(ref) do
-    Logger.debug "children: #{inspect(Supervisor.which_children(ref))}"
     case Supervisor.terminate_child(ref, :elli) do
       :ok -> Supervisor.delete_child(ref, :elli)
       error -> error

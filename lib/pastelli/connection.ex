@@ -9,7 +9,7 @@ defmodule Pastelli.Connection do
     end
     [host | and_port] = String.split(host_port, ":")
     port = List.first and_port
-    
+
     req_headers = downcase_keys(headers)
     |> ensure_origin(host_port)
 
