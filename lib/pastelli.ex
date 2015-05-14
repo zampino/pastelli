@@ -41,7 +41,7 @@ defmodule Pastelli do
     run(:http, plug, options, elli_options)
   end
 
-  def https(plug, options, elli_options) do
+  def https(_plug, _options, _elli_options) do
     raise ArgumentError, message: "NotImplemented"
   end
 
@@ -56,7 +56,7 @@ defmodule Pastelli do
     )
   end
 
-  def build_elli_options(scheme, plug, options, elli_options) do
+  def build_elli_options(_scheme, plug, options, elli_options) do
     default_elli_options
     |> Keyword.put(:callback_args, {plug, options})
     |> Keyword.merge(elli_options)

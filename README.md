@@ -64,13 +64,15 @@ connection owner process of the EventSource client
 closing the socket (or just crashing).
 More precisely, Pastelli tries to address this [issue](https://github.com/elixir-lang/plug/issues/228).
 
-## `Plug.Conn` API covered by pastelli
-- read_req_body
-- chunk
-- send_chunked
-- send_resp
+## `Plug.Conn.Adapter` behaviour currently covered by pastelli
+[x] send_resp
+[ ] send_file
+[x] send_chunked
+[x] chunk
+[x] read_req_body
+[ ] parse_req_multipart
 
-## `Plug.Conn` api extensions
+## `Plug.Conn.Adapter` extensions
 - initial chunk
 - close chunk
 
@@ -79,6 +81,5 @@ More precisely, Pastelli tries to address this [issue](https://github.com/elixir
 - [x] run http
 - [ ] run https
 - [ ] websocket upgrade via mmzeeman/elli_websocket
-- [ ] docs
 - [ ] hex package
 - [ ] shutdown reference

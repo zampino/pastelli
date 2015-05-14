@@ -1,9 +1,9 @@
 defmodule Pastelli.Handler do
   require Logger
-  # @behaviour :elli_handler
+
   alias :elli_request, as: Request
 
-  def init(req, {_plug, _opts}) do
+  def init(_req, {_plug, _opts}) do
     :ignore
   end
 
@@ -26,14 +26,13 @@ defmodule Pastelli.Handler do
     {:chunk, conn.resp_headers, conn.assigns[:init_chunk] || ""}
   end
 
-  defp process_connection(%Plug.Conn{halted: :true}=conn, _plug) do
+  defp process_connection(%Plug.Conn{halted: :true}, _plug) do
     exit(:normal)
   end
 
   # Elli Event handlers
 
   def handle_event :chunk_complete, [req, 200, _headers, _end, _timings], _args do
-    log "#{inspect(req)}\n#{inspect(_headers)}\n#{inspect(_args)}", "}}}}} chunk completed {{{{{"
     Process.exit Request.chunk_ref(req), :shutdown
     :ok
   end

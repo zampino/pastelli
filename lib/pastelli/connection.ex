@@ -1,6 +1,8 @@
 defmodule Pastelli.Connection do
+  @behaviour Plug.Conn.Adapter
+  @moduledoc false
+  alias Pastelli.Connection.NotImplementedError
   alias :elli_request, as: Request
-  require Logger
 
   def build_from(req) do
     headers = Request.headers(req)
@@ -29,7 +31,7 @@ defmodule Pastelli.Connection do
 
   ## Plug.Conn API ##
 
-  def read_req_body(req, options) do
+  def read_req_body(req, _options) do
     {:ok, Request.body(req), req}
   end
 
@@ -52,16 +54,18 @@ defmodule Pastelli.Connection do
     end
   end
 
+  def parse_req_multipart(_, _, _), do: raise(NotImplementedError, 'parse_req_multipart')
+  def send_file(_, _, _, _, _, _), do: raise(NotImplementedError, 'send_file')
+
   # adapter extensions
   # needs a mix-in inside router
 
   def close_chunk(req) do
-    Request.chunk_ref(req)
-    |> Request.close_chunk()
+    Request.chunk_ref(req) |> Request.close_chunk()
     :ok
   end
 
-  ##
+  # private
 
   defp downcase_keys(headers) do
     downcase_key = fn({key, value})->
@@ -83,5 +87,14 @@ defmodule Pastelli.Connection do
   defp split_path(path) do
     segments = :binary.split(path, "/", [:global])
     for segment <- segments, segment != "", do: segment
+  end
+
+  defmodule NotImplementedError do
+    defexception [:message]
+
+    def exception(method) do
+      message = "#{inspect(method)} is not supported by Pastelli.Connection yet"
+      %__MODULE__{message: message}
+    end
   end
 end
