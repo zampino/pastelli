@@ -65,14 +65,16 @@ closing the socket (or just crashing).
 More precisely, Pastelli tries to address this [issue](https://github.com/elixir-lang/plug/issues/228).
 
 ## `Plug.Conn.Adapter` behaviour currently covered by pastelli
-[x] send_resp
-[ ] send_file
-[x] send_chunked
-[x] chunk
-[x] read_req_body
-[ ] parse_req_multipart
+
+- [x] send_resp
+- [ ] send_file
+- [x] send_chunked
+- [x] chunk
+- [x] read_req_body
+- [ ] parse_req_multipart
 
 ## `Plug.Conn.Adapter` extensions
+
 - initial chunk
 - close chunk
 
