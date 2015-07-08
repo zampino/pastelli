@@ -54,9 +54,11 @@ defmodule Pastelli.Connection do
     end
   end
 
-  def parse_req_multipart(_, _, _), do: raise(NotImplementedError, 'parse_req_multipart')
-  def send_file(_, _, _, _, _, _), do: raise(NotImplementedError, 'send_file')
+  def send_file(req, _status, _resp_headers, file, offset, length) do
+    {:ok, {:file, file, offset, length}, req}
+  end
 
+  def parse_req_multipart(_, _, _), do: raise(NotImplementedError, 'parse_req_multipart')
   # adapter extensions
   # needs a mix-in inside router
 
