@@ -1,4 +1,7 @@
 %{"elli": {:git, "git://github.com/knutin/elli.git", "46135bf5c0096e1419c799535f798d14b2bd6f44", []},
+  "elli_websocket": {:git, "git://github.com/mmzeeman/elli_websocket.git", "2b32995635a12daf0e8d78cbad3248089b7ac14d", []},
   "hackney": {:hex, :hackney, "0.15.2"},
   "idna": {:hex, :idna, "1.0.1"},
+  "meck": {:hex, :meck, "0.8.2"},
+  "mock": {:hex, :mock, "0.1.1"},
   "plug": {:git, "git://github.com/elixir-lang/plug.git", "d91e0e977a3cbf29a08aceca5f76393a103f6c5e", []}}

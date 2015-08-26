@@ -16,11 +16,6 @@ defmodule Pastelli.ConnectionTest do
     apply __MODULE__, function, [conn]
   rescue
     exception ->
-      # receive do
-      #   {:plug_conn, :sent} ->
-      #     :erlang.raise(:error, exception, :erlang.get_stacktrace)
-      # after
-      #   0 ->
       send_resp(conn, 500, Exception.message(exception) <> "\n" <>
         Exception.format_stacktrace(System.stacktrace))
   end
