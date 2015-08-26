@@ -8,9 +8,16 @@ defmodule Pastelli.Handler do
   end
 
   def handle(req, {plug, opts}) do
-    Pastelli.Connection.build_from(req)
-    |> plug.call(opts)
-    |> process_connection(plug)
+    try do
+      Pastelli.Connection.build_from(req)
+      |> plug.call(opts)
+      |> process_connection(plug)
+    catch
+      :error, value ->
+        stack = System.stacktrace()
+        exception = Exception.normalize(:error, value, stack)
+        Logger.error "[PLUG:CALL] #{inspect exception} \n #{inspect stack}"
+    end
   end
 
   defp log(what, header\\"") do
@@ -36,8 +43,8 @@ defmodule Pastelli.Handler do
 
   defp process_connection(%Plug.Conn{
     resp_body: {:file, filename, _offset, _length}}=conn, _plug) do
-    conn = %{conn | resp_headers: [{"Connection", "close"}|conn.resp_headers]}
-    {conn.status, conn.resp_headers, {:file, filename}}
+    resp_headers = [{"Connection", "close"} | conn.resp_headers]
+    {conn.status, resp_headers, {:file, filename}}
   end
 
   defp process_connection(%Plug.Conn{state: :sent}=conn, _plug) do

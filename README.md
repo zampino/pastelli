@@ -55,7 +55,33 @@ defmodule MyPlug.Router do
 ```
 
 ## Examples
-For a working example, have a look [here](https://github.com/zampino/plug_rc).
+Event Source based [remote control](https://github.com/zampino/plug_rc) backend
+for slides.
+
+## Web Sockets
+Pastelli upgrades to Web Sockets thanks to mmzeeman's [elli_websockets](https://github.com/mmzeeman/elli_websocket).
+
+Pass an elli_websocket
+[handler](https://github.com/mmzeeman/elli_websocket#callback-module) in the private
+map of your connection. This will receive the current connection as option argument.
+
+```elixir
+  get "/ws" do
+    put_private(conn, :upgrade, {:websocket, WebSocketHandler})
+  end
+
+  defmodule WebSocketHandler do
+    def websocket_init(request, conn: %Plug.Conn{} = conn) do
+      # ...
+    end
+    def websocket_handle() # handle callback
+    def websocket_info() # info callback
+  end
+```
+
+In this contrived [experiment](https://zampino/phoenix-on-pastelli) I
+Pastelli can be seen replacing Cowboy from the heart of [Phoenix (v1.0.0-dev)](htts://phoenixframework.org) in favour of Elli,
+for both HTTP and WebSocket communication.
 
 ## Pastelli tries to help!
 
@@ -67,7 +93,7 @@ More precisely, Pastelli tries to address this [issue](https://github.com/elixir
 ## `Plug.Conn.Adapter` behaviour currently covered by pastelli
 
 - [x] send_resp
-- [ ] send_file
+- [x] send_file
 - [x] send_chunked
 - [x] chunk
 - [x] read_req_body

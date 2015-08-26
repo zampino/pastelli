@@ -59,15 +59,13 @@ defmodule Pastelli.Connection do
   end
 
   def parse_req_multipart(_, _, _), do: raise(NotImplementedError, 'parse_req_multipart')
-  # adapter extensions
-  # needs a mix-in inside router
 
+  # NOTE: adapter extensions
+  # needs a mix-in inside router
   def close_chunk(req) do
     Request.chunk_ref(req) |> Request.close_chunk()
     :ok
   end
-
-  # private
 
   defp downcase_keys(headers) do
     downcase_key = fn({key, value})->
