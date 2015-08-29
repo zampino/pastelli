@@ -79,8 +79,11 @@ map of your connection. This will receive the current connection as option argum
   end
 ```
 
-In this contrived [experiment](https://zampino/phoenix-on-pastelli) I
-Pastelli can be seen replacing Cowboy from the heart of [Phoenix (v1.0.0-dev)](htts://phoenixframework.org) in favour of Elli,
+## Pastelli and Phoenix
+
+In this contrived [experiment](https://github.com/zampino/phoenix-on-pastelli)
+you can see Pastelli in action,
+replacing Cowboy from the heart of [Phoenix (v1.0.0-dev)](htts://phoenixframework.org) in favour of Elli,
 for both HTTP and WebSocket communication.
 
 ## Pastelli tries to help!
@@ -104,10 +107,10 @@ More precisely, Pastelli tries to address this [issue](https://github.com/elixir
 - initial chunk
 - close chunk
 
-## Roadmap
+## Agenda
 
 - [x] run http
 - [ ] run https
-- [ ] websocket upgrade via mmzeeman/elli_websocket
+- [x] websocket upgrade via mmzeeman/elli_websocket
+- [ ] Plug.Conn extensions
 - [ ] hex package
-- [ ] shutdown reference
