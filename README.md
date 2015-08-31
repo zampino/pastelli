@@ -83,7 +83,7 @@ map of your connection. This will receive the current connection as option argum
 
 In this contrived [experiment](https://github.com/zampino/phoenix-on-pastelli)
 you can see Pastelli in action,
-replacing Cowboy from the heart of [Phoenix (v1.0.0-dev)](htts://phoenixframework.org) in favour of Elli,
+replacing Cowboy from the heart of [Phoenix (v1.0.0)](htts://phoenixframework.org) in favour of Elli,
 for both HTTP and WebSocket communication.
 
 ## Pastelli tries to help!
