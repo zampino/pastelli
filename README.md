@@ -6,7 +6,7 @@ Pastelli is a colorful Plug adapter for [Elli](//github.com/knutin/elli)
 with a focus on streaming chunked
 connections (read `EventSource`).
 
-For the moment,
+For the moment, this is quite alpha and
 it implements just a subset (see below) of the `Plug.Conn` api.
 
 ## Usage
@@ -16,8 +16,10 @@ you'll type:
 ```elixir
 Pastelli.http MyPlug.Router, [], [port: 4001]
 ```
+Now setup your router (or plug) as usual.
+Pastelli changes the semantics of EventSource chunked responses,
+in which it doesn't block your router dispatch:
 
-Now setup your router (or plug) as usual
 ```elixir
 defmodule MyPlug.Router do
   use Plug.Router
@@ -51,7 +53,7 @@ defmodule MyPlug.Router do
     # do the necessary cleanup
     conn
   end
-
+end
 ```
 
 ## Examples

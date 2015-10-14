@@ -66,8 +66,8 @@ defmodule Pastelli.Handler do
     :ok
   end
 
-  def handle_event(other, _foo, _bar) do
-    log "[EVENT]: #{inspect(other)} -- #{inspect(_foo)} -- #{inspect(_bar)}"
+  def handle_event(other, one, two) do
+    log "[EVENT]: #{inspect other} -- #{inspect one} -- #{inspect two}"
     :ok
   end
 
