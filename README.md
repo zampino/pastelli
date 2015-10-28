@@ -82,6 +82,42 @@ map of your connection. This will receive the current connection as option argum
   end
 ```
 
+## A Streaming DSL
+Using Pastelli's own router, you will enhance
+`Plug.Router` by a `stream` function.
+
+`Pastelli.Router` internally imports `Pastelli.Conn`
+
+
+```elixir
+defmodule MyPlug.Router do
+  use Pastelli.Router
+  plug :match
+  plug :dispatch
+
+  stream "/connections/:id" do
+    event(conn, {text: "hallo!"}, type: :handshake, last_sent: "xxx")
+    |> register_stream(id)
+  end
+end
+```
+
+## Pastelli Connection Struct Methods
+
+```elixir
+defmodule MyReactorEngine do
+  use GenServer
+  import Pastelli.Conn
+
+  def cast(:something_happened, %{conn: conn}) do
+    
+  end
+
+
+end
+```
+
+
 ## Pastelli and Phoenix
 
 In this contrived [experiment](https://github.com/zampino/phoenix-on-pastelli)
