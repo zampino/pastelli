@@ -17,9 +17,9 @@ defmodule Pastelli.Mixfile do
 
   defp deps do
     [
-      {:plug, github: "elixir-lang/plug", optional: true},
+      {:plug, "~> 1.0"},
       {:elli, github: "knutin/elli"},
-      {:elli_websocket, github: "zampino/elli_websocket", branch: "fix_erlang_otp_18_record_type", compile: "make test compile"},
+      {:elli_websocket, github: "mmzeeman/elli_websocket", compile: "make test compile"},
       {:hackney, "~> 1.3", only: :test},
       {:mock, "~> 0.1", only: :test}
     ]
