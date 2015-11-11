@@ -116,7 +116,7 @@ defmodule Pastelli.ConnectionTest do
       {:reply, pid, Map.put(state, :linked_pid, pid)}
     end
 
-    def handle_info {:DOWN, _ref, :process, pid, :shutdown}, state do
+    def handle_info {:DOWN, _ref, :process, pid, :chunk_complete}, state do
       match_pid = state.linked_pid
       ^match_pid = pid
       send state.test_pid, :conn_process_was_shut_down

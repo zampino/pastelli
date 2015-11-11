@@ -48,9 +48,10 @@ defmodule MyPlug.Router do
     Process.link pid
     # we link the process to the streaming manager!
     # once the chunk is complete (client closes socket or crashes)
-    # pastelli handler will send a shutdown exit to the connection process
+    # pastelli handler will send a `chunk_complete` exit signal
+    # to the connection process
     # it is your responsability to monitor the event manager and
-    # do the necessary cleanup
+    # react on such exit
     conn
   end
 end
@@ -58,7 +59,7 @@ end
 
 ## Examples
 Event Source based [remote control](https://github.com/zampino/plug_rc) backend
-for slides.
+for remote controlling presentation slides.
 
 ## Web Sockets
 Pastelli upgrades to Web Sockets thanks to mmzeeman's [elli_websockets](https://github.com/mmzeeman/elli_websocket).
