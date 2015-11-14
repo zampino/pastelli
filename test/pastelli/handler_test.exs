@@ -58,7 +58,7 @@ defmodule Pastelli.HandlerTest do
   defmodule ChunkPlug do
     import Plug.Conn
     def call(conn, :options) do
-      send_chunked(conn, 200) |> assign(:init_chunk, "HALLO")
+      send_chunked(conn, 200) |> put_private(:init_chunk, "HALLO")
     end
   end
 

@@ -26,7 +26,7 @@ defmodule Pastelli.Connection do
       query_string: Request.query_str(req),
       req_headers: req_headers,
       scheme: :http
-    } # |> Plug.Conn.put_private :plug_stream_pid, pid
+    }
   end
 
   ## Plug.Conn API ##

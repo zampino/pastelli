@@ -69,7 +69,7 @@ defmodule Pastelli.ConnectionTest do
   def send_chunked(conn) do
     conn = send_chunked(conn, 200)
     assert conn.state == :chunked
-    conn = assign(conn, :init_chunk, "data: HANDSHAKE\n\n")
+    conn = put_private(conn, :init_chunk, "data: HANDSHAKE\n\n")
 
     spawn_link fn()->
       :timer.sleep 200
@@ -125,7 +125,7 @@ defmodule Pastelli.ConnectionTest do
   end
 
   def send_chunky(conn) do
-    conn = send_chunked(conn, 200) |> assign(:init_chunk, "data: HANDSHAKE\n\n")
+    conn = send_chunked(conn, 200) |> put_private(:init_chunk, "data: HANDSHAKE\n\n")
     SideEffect.register(conn) |> Process.link()
     conn
   end

@@ -41,7 +41,7 @@ defmodule Pastelli.Handler do
   end
 
   defp process_connection(%Plug.Conn{state: :chunked}=conn, _plug) do
-    {:chunk, conn.resp_headers, conn.assigns[:init_chunk] || ""}
+    {:chunk, conn.resp_headers, conn.private[:init_chunk] || ""}
   end
 
   defp process_connection(%Plug.Conn{halted: :true}, _plug) do
