@@ -26,35 +26,58 @@ defmodule MyPlug.Router do
   plug :match
   plug :dispatch
 
-  def init(_options), do: []
-
   get "/connections/:id" do
     put_resp_content_type(conn, "text/event-stream")
-    |> assign(:init_chunk,
-      "retry: 6000\nid: #{id}\nevent: handshake\ndata: connected #{id}\n\n")
-    # you can setup an initial chunk to be sent with the first connection
     |> send_chunked(200)
     |> register_stream(id)
-    # with pastelli this dispatch won't block execution
-    # but rather enter a receive loop just afterwards,
-    # waiting for chunks
+    # dispatch doesn't need to block execution,
+    # it enters a chunk loop just after pipeline resolution,
+    # waiting for chunk messages
   end
 
   defp register_stream(conn, id) do
     {:ok, pid} = MyPlug.Connections.register id, conn
     # usually a :simple_one_for_one supervised
-    # event manager registered into a hashdict of processes
+    # event manager
 
     Process.link pid
     # we link the process to the streaming manager!
     # once the chunk is complete (client closes socket or crashes)
     # pastelli handler will send a `chunk_complete` exit signal
-    # to the connection process
-    # it is your responsability to monitor the event manager and
-    # react on such exit
+    # to the connection process.
+    # It is your responsibility to monitor the event manager and
+    # react on such exits
     conn
   end
 end
+```
+
+## A Streaming DSL
+`Pastelli.Router` wraps an extra [`stream`](//github.com/zampino/pastelli/blob/master/lib/pastelli/router.ex) macro around `Plug.Router` and
+imports `Pastelli.Conn`, a module with a few extra functions to manipulate
+`Plug.Conn` chunked-state structs.
+
+
+```elixir
+defmodule MyPlug.Router do
+  use Pastelli.Router
+  plug :match
+  plug :dispatch
+
+  stream "/connections" do
+    init_chunk(conn, %{text: "hallo!"}, event: :handshake, retry: 6000, id: 1234)
+    # sends an initial chunk to event source as early as plug pipeline ends
+    |> register_stream()
+  end
+end
+```
+
+from wherever you can access the connection struct,
+`Pastelli.Conn.event/2,3` serializes non-binary message body and
+meta data.
+
+```elixir
+Pastelli.Conn.event(conn, %{some: "map"}, event: "message", id: "x4x3", retry: 6000)
 ```
 
 ## Examples
@@ -82,42 +105,6 @@ map of your connection. This will receive the current connection as option argum
   end
 ```
 
-## A Streaming DSL
-Using Pastelli's own router, you will enhance
-`Plug.Router` by a `stream` function.
-
-`Pastelli.Router` internally imports `Pastelli.Conn`
-
-
-```elixir
-defmodule MyPlug.Router do
-  use Pastelli.Router
-  plug :match
-  plug :dispatch
-
-  stream "/connections/:id" do
-    event(conn, {text: "hallo!"}, type: :handshake, last_sent: "xxx")
-    |> register_stream(id)
-  end
-end
-```
-
-## Pastelli Connection Struct Methods
-
-```elixir
-defmodule MyReactorEngine do
-  use GenServer
-  import Pastelli.Conn
-
-  def cast(:something_happened, %{conn: conn}) do
-    
-  end
-
-
-end
-```
-
-
 ## Pastelli and Phoenix
 
 In this contrived [experiment](https://github.com/zampino/phoenix-on-pastelli)
@@ -141,10 +128,11 @@ More precisely, Pastelli tries to address this [issue](https://github.com/elixir
 - [x] read_req_body
 - [ ] parse_req_multipart
 
-## `Plug.Conn.Adapter` extensions
+## `Plug.Conn` extensions
 
-- initial chunk
-- close chunk
+- init_chunk/2, init_chunk/3
+- event/2, event/3
+- close_chunk/0
 
 ## Agenda
 
