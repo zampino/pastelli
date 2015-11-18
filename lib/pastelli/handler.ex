@@ -8,6 +8,9 @@ defmodule Pastelli.Handler do
     Request.get_header("Upgrade", req) |> maybe_upgrade
   end
 
+  defp maybe_upgrade("websocket"), do: {:ok, :handover}
+  defp maybe_upgrade(_), do: {:ok, :standard}
+
   def handle(req, {plug, opts}) do
     try do
       Pastelli.Connection.build_from(req)
@@ -60,9 +63,6 @@ defmodule Pastelli.Handler do
     Logger.info "[EVENT]: #{inspect other} -- #{inspect one} -- #{inspect two}"
     :ok
   end
-
-  defp maybe_upgrade("websocket"), do: {:ok, :handover}
-  defp maybe_upgrade(_), do: {:ok, :standard}
 
   # NOTES:
   # [1] -  elli seems to not close the connection on file

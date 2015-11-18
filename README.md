@@ -3,11 +3,11 @@
 ![alt](logo.png)
 
 Pastelli is a colorful Plug adapter for [Elli](//github.com/knutin/elli)
-with a focus on streaming chunked
+with a focus on streaming over chunked
 connections (read `EventSource`).
 
 For the moment, this is quite alpha and
-it implements just a subset (see below) of the `Plug.Conn` api.
+it implements almost all (see below) of the `Plug.Conn.Adapter` behaviour.
 
 ## Usage
 As you would do with your beloved `Plug.Adapters.Cowboy`,
@@ -16,7 +16,7 @@ you'll type:
 ```elixir
 Pastelli.http MyPlug.Router, [], [port: 4001]
 ```
-Now setup your router (or plug) as usual.
+Now setup your router (or simpler plug) as usual.
 Pastelli changes the semantics of EventSource chunked responses,
 in which it doesn't block your router dispatch:
 
@@ -56,7 +56,6 @@ end
 `Pastelli.Router` wraps an extra [`stream`](//github.com/zampino/pastelli/blob/master/lib/pastelli/router.ex) macro around `Plug.Router` and
 imports `Pastelli.Conn`, a module with a few extra functions to manipulate
 `Plug.Conn` chunked-state structs.
-
 
 ```elixir
 defmodule MyPlug.Router do
@@ -109,7 +108,7 @@ map of your connection. This will receive the current connection as option argum
 
 In this contrived [experiment](https://github.com/zampino/phoenix-on-pastelli)
 you can see Pastelli in action,
-replacing Cowboy from the heart of [Phoenix (v1.0.0)](htts://phoenixframework.org) in favour of Elli,
+replacing Cowboy from the heart of [Phoenix (v1.0.3)](htts://phoenixframework.org) in favour of Elli,
 for both HTTP and WebSocket communication.
 
 ## Pastelli tries to help!
@@ -128,7 +127,7 @@ More precisely, Pastelli tries to address this [issue](https://github.com/elixir
 - [x] read_req_body
 - [ ] parse_req_multipart
 
-## `Plug.Conn` extensions
+## `Plug.Conn` extensions (`Pastelli.Conn`)
 
 - init_chunk/2, init_chunk/3
 - event/2, event/3
@@ -139,5 +138,7 @@ More precisely, Pastelli tries to address this [issue](https://github.com/elixir
 - [x] run http
 - [ ] run https
 - [x] websocket upgrade via mmzeeman/elli_websocket
-- [ ] Plug.Conn extensions
+- [x] Plug.Conn extensions
+- [x] Pastelli.Router streaming DSL
+- [ ] ExDoc
 - [ ] hex package

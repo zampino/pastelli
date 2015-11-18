@@ -29,7 +29,7 @@ defmodule Pastelli.Connection do
     }
   end
 
-  ## Plug.Conn API ##
+  ## Plug.Conn.Adapter callbacks ##
 
   def read_req_body(req, _options) do
     {:ok, Request.body(req), req}
@@ -59,6 +59,8 @@ defmodule Pastelli.Connection do
   end
 
   def parse_req_multipart(_, _, _), do: raise(NotImplementedError, 'parse_req_multipart')
+
+  ## pastelli extra callback ##
 
   def close_chunk(req) do
     Request.chunk_ref(req) |> Request.close_chunk()
