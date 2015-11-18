@@ -60,8 +60,6 @@ defmodule Pastelli.Connection do
 
   def parse_req_multipart(_, _, _), do: raise(NotImplementedError, 'parse_req_multipart')
 
-  # NOTE: adapter extensions
-  # needs a mix-in inside router
   def close_chunk(req) do
     Request.chunk_ref(req) |> Request.close_chunk()
     :ok

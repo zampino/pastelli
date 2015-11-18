@@ -1,10 +1,11 @@
 defmodule Pastelli.Mixfile do
   use Mix.Project
+  @version "0.2.2"
 
   def project do
     [app: :pastelli,
      description: "An Elixir Plug Adapter with a focus on chunked streaming connections for Elli server",
-     version: "0.2.1",
+     version: @version,
      elixir: "~> 1.1",
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,

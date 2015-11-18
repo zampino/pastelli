@@ -2,6 +2,7 @@ defmodule Pastelli.Handler do
   @moduledoc false
   require Logger
   alias :elli_request, as: Request
+  @behaviour :elli_handler
 
   def init(req, {_plug, _opts}) do
     Request.get_header("Upgrade", req) |> maybe_upgrade
