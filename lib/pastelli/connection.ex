@@ -1,8 +1,11 @@
 defmodule Pastelli.Connection do
-  @behaviour Plug.Conn.Adapter
   @moduledoc false
+  require Record
+  @behaviour Plug.Conn.Adapter
+
   alias Pastelli.Connection.NotImplementedError
   alias :elli_request, as: Request
+  Record.defrecordp :elli_req, Record.extract(:req, from: "deps/elli/include/elli.hrl")
 
   def build_from(req) do
     headers = Request.headers(req)
@@ -21,8 +24,8 @@ defmodule Pastelli.Connection do
       port: port,
       method: Request.method(req) |> to_string(),
       owner: self,
-      peer: Request.peer(req),
-      path_info: split_path(Request.raw_path(req)),
+      peer: get_peer(req),
+      path_info: Request.path(req),
       query_string: Request.query_str(req),
       req_headers: req_headers,
       scheme: :http
@@ -84,9 +87,14 @@ defmodule Pastelli.Connection do
     end
   end
 
-  defp split_path(path) do
-    segments = :binary.split(path, "/", [:global])
-    for segment <- segments, segment != "", do: segment
+  defp get_peer(req) do
+    case elli_req(req, :socket) do
+      :undefined ->
+        {:undefined, :undefined}
+      socket ->
+        {:ok, {address, port}} = :elli_tcp.peername(socket)
+        {address, port}
+    end
   end
 
   defmodule NotImplementedError do

@@ -31,7 +31,7 @@ defmodule Pastelli do
       # Starts a new interface
       Plug.Adapters.Elli.http MyPlug, [], port: 80
 
-      # TODO: The interface above can be shutdown with
+      # shut it down
       Plug.Adapters.Elli.shutdown MyPlug.HTTP
 
   """
@@ -47,6 +47,16 @@ defmodule Pastelli do
 
   def shutdown(ref) do
     Pastelli.Supervisor.shutdown(ref)
+  end
+
+  @doc """
+    returns a child spec for elli to be supervised in your application
+  """
+  import Supervisor.Spec
+  def child_spec(scheme, plug, options, elli_options) do
+    {id, elli_options} = Keyword.pop elli_options, :supervisor_id, :elli
+    args = build_elli_options(scheme, plug, options, elli_options)
+    worker(:elli, [args], id: id)
   end
 
   defp run(scheme, plug, options, elli_options) do
