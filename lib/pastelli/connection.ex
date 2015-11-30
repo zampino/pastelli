@@ -5,7 +5,7 @@ defmodule Pastelli.Connection do
 
   alias Pastelli.Connection.NotImplementedError
   alias :elli_request, as: Request
-  Record.defrecordp :elli_req, Record.extract(:req, from: "deps/elli/include/elli.hrl")
+  Record.defrecordp :elli_req, Record.extract(:req, from_lib: "elli/include/elli.hrl")
 
   def build_from(req) do
     headers = Request.headers(req)
