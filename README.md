@@ -106,10 +106,14 @@ map of your connection. This will receive the current connection as option argum
 
 ## Pastelli and Phoenix
 
-In this contrived [experiment](https://github.com/zampino/phoenix-on-pastelli)
-you can see Pastelli in action,
-replacing Cowboy from the heart of [Phoenix (v1.0.3)](htts://phoenixframework.org) in favour of Elli,
-for both HTTP and WebSocket communication.
+With version `1.1.0` or newer of
+[Phoenix](htts://phoenixframework.org)
+we can allow different servers other than Cowboy at the heart of the framework.
+It's enough to provide a suitable
+[endpoint handler behaviour](https://github.com/phoenixframework/phoenix/blob/v1.1.0/lib/phoenix/endpoint/handler.ex).
+
+With [`Pastelli.Phoenix`](https://github.com/zampino/pastelli_phoenix) you
+can have Elli serve Phoenix. Check also this [example](https://github.com/zampino/phoenix-on-pastelli) out.
 
 ## Pastelli tries to help!
 
