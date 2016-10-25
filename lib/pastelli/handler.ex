@@ -59,10 +59,7 @@ defmodule Pastelli.Handler do
     :ok
   end
 
-  def handle_event(other, one, two) do
-    Logger.info "[EVENT]: #{inspect other} -- #{inspect one} -- #{inspect two}"
-    :ok
-  end
+  def handle_event(_ev, _req, _args), do: :ok
 
   # NOTES:
   # [1] -  elli seems to not close the connection on file
